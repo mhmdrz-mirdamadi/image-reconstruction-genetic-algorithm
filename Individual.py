@@ -17,6 +17,7 @@ class Individual:
             self.size = self.img.shape
         
         self.img_lab = cv2.cvtColor(self.img, cv2.COLOR_RGB2Lab)
+        self.fitness_type = 'mse'
 
     def add_random_block(self, color: np.ndarray) -> None:
         min_len, max_len = int(0.01*self.size[0]), int(0.1*self.size[1])
@@ -53,12 +54,22 @@ class Individual:
         for _ in range(np.random.randint(20, 50)):
             self.add_random_block(random_color)
     
-    def fitness(self, target_img: np.ndarray) -> np.float32:
+    def fitness(self, target_img: np.ndarray):
+        if self.fitness_type == 'mse':
+            return self.fitness_mse(target_img)
+        elif self.fitness_type == 'delta_e':
+            return self.fitness_delta_e(target_img)
+
+    def fitness_delta_e(self, target_img: np.ndarray) -> np.float32:
         target_img_lab = cv2.cvtColor(target_img, cv2.COLOR_RGB2Lab)
         delta_e = delta_E(self.img_lab, target_img_lab)
         delta_e = np.mean(delta_e)
         
         return delta_e
+
+    def fitness_mse(self, target_img: np.ndarray) -> np.float32:
+        err = (target_img - self.img)**2
+        return np.mean(err)
 
     def mutate(self, rate: float, max_blocks: int) -> None:
         blocks = range(max_blocks+1)
@@ -72,6 +83,10 @@ class Individual:
             random_color = np.random.random(3)
             self.add_random_block(random_color)
 
-    def show(self) -> None:
+    def show(self, title: str) -> None:
         plt.imshow(self.img)
+        plt.title(title)
         plt.show()
+
+    def save(self, path: str) -> None:
+        plt.imsave(path, self.img)

@@ -66,8 +66,9 @@ class Genetic:
 
         sorted_fitnesses = np.argsort(fitnesses)
         top_fitnesses = sorted_fitnesses[:top]
+        top_individuals = [self.population[idx] for idx in top_fitnesses]
 
-        return self.population[top_fitnesses], fitnesses[top_fitnesses]
+        return top_individuals, fitnesses[top_fitnesses]
 
     def run(self, generations: int) -> None:
         for i in range(generations):
@@ -77,14 +78,12 @@ class Genetic:
             for j, (p1, p2) in enumerate(zip(parent_1_idxs, parent_2_idxs)):
                 if np.random.random() <= 0.7:
                     self.population[j] = self.crossover_blend(
-                        self.best_parents[p1], self.best_parents[p2]
-                    )
+                        self.best_parents[p1], self.best_parents[p2])
                 else:
                     self.population[j] = self.crossover_two_point(
-                        self.best_parents[p1], self.best_parents[p2]
-                    )
+                        self.best_parents[p1], self.best_parents[p2])
                 self.population[j].mutate(self.mutation_rate, 4)
             
             self.population[self.new_generation_size:] = self.best_parents
 
-            print(f'Generation {i+1}')
+            print(f'Generation {i+1}...')
