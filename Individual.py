@@ -3,19 +3,20 @@ import numpy as np
 import matplotlib.pyplot as plt
 from colour import delta_E
 
+
 class Individual:
-    def __init__(self, path_to_img: str, size: tuple) -> None:
+    def __init__(self, path_to_img: str = '', size: tuple = ()) -> None:
         if len(path_to_img) == 0:
             self.img = np.zeros(size, dtype=np.float32)
+            self.size = size
             self.random_initialize()
         else:
             self.img = cv2.imread(path_to_img)
             self.img = cv2.cvtColor(self.img, cv2.COLOR_BGR2RGB)
             self.img = np.array(self.img, dtype=np.float32) / 255
+            self.size = self.img.shape
         
         self.img_lab = cv2.cvtColor(self.img, cv2.COLOR_RGB2Lab)
-
-        self.size = self.img.shape
 
     def add_random_block(self, color: np.ndarray) -> None:
         min_len, max_len = int(0.01*self.size[0]), int(0.1*self.size[1])
@@ -59,7 +60,7 @@ class Individual:
         
         return delta_e
 
-    def mutate(self, rate: np.float32, max_blocks: np.int32) -> None:
+    def mutate(self, rate: float, max_blocks: int) -> None:
         blocks = range(max_blocks+1)
         p = [rate**i for i in range(1, max_blocks+1)]
         p.insert(0, 1-rate)
@@ -70,3 +71,7 @@ class Individual:
         for _ in range(num_blocks):
             random_color = np.random.random(3)
             self.add_random_block(random_color)
+
+    def show(self) -> None:
+        plt.imshow(self.img)
+        plt.show()
