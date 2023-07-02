@@ -65,7 +65,7 @@ class Individual:
             random_color = np.random.random(3)
             self.add_random_block(random_color)
 
-    def show(self, title: str) -> None:
+    def show(self, title: str = '') -> None:
         plt.imshow(self.img)
         plt.title(title)
         plt.show()

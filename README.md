@@ -6,7 +6,7 @@
 
 Each Individual is an image with size of target image. When a random individual is created, it is given a random background color. Then, a random number of rectangular blocks with a random size of a specific random color for each individual is added to that background.
 
-<img src="resource/initial_population.png" alt="Example">
+<img src="resource/initial_population.png" alt="Initial Population">
 
 ## Fitness Function
 
@@ -20,10 +20,18 @@ The tournament selection method is implemented to pick up the best individuals a
 
 For crossover operation, it is used two different approaches which could help the diversity of the population. Both of these operations in one generation are used for creating the child which each has a probability of choosing.
 
-## Blending Crossover
+### Blending Crossover
 
 In this method, a random uniformly distributed variable $x \in [0, 1]$ is generated and the child is overlayed of a first parent with opacity $x$ and the second parent with opacity $1-x$.
 
-## Two Point Crossover
+### Two Point Crossover
 
 In this approach, two random points on the row and column are selected to be the crossover points. These two points divide the individual into four areas. In areas 1 and 4, the first parent, and in areas 2 and 3, the second parent will be placed without any further changes
+
+<img src="resource/crossover.png" alt="Crossover">
+
+## Mutation
+
+To perform a mutation, a random number of rectangular blocks of random color (like something there was in the producing initial population) superimpose onto an individual.
+
+<img src="resource/mutation.png" alt="Mutation">
