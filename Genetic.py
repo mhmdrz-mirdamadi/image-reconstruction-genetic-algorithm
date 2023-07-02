@@ -70,7 +70,7 @@ class Genetic:
 
         return top_individuals, fitnesses[top_fitnesses]
 
-    def run(self, generations: int) -> None:
+    def run(self, generations: int, print_every: int = 50) -> None:
         for i in range(generations):
             self.selection()
             parent_1_idxs = np.random.permutation(self.new_generation_size) % self.parents_size
@@ -86,4 +86,5 @@ class Genetic:
             
             self.population[self.new_generation_size:] = self.best_parents
 
-            print(f'Generation {i+1}...')
+            if (i + 1) % print_every == 0:
+                print(f'Generation {i+1}...')
