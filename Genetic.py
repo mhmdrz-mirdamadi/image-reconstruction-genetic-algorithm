@@ -8,7 +8,11 @@ class Genetic:
                         population_size: int,
                         tournament_size: float,
                         parents_size: float,
-                        mutation_rate: float) -> None:
+                        mutation_rate: float,
+                        blend_use: float,
+                        block_size: tuple,
+                        num_blocks_initialize: tuple,
+                        max_blocks_mutation: int) -> None:
         
         self.target = target_individual
 
@@ -18,12 +22,18 @@ class Genetic:
         self.parents_size = int(parents_size*population_size)
         self.new_generation_size = self.population_size - self.parents_size
         self.mutation_rate = mutation_rate
+        self.blend_use = blend_use
+        self.block_size = block_size
+        self.num_blocks_initialize = num_blocks_initialize
+        self.max_blocks_mutation = max_blocks_mutation
 
         self.population: list
         self.best_parents: list
         
     def initialize_population(self) -> None:
-        self.population = [Individual('', self.size) for _ in range(self.population_size)]
+        self.population = [Individual('', self.size, self.block_size,
+                                            self.num_blocks_initialize)
+                            for _ in range(self.population_size)]
     
     def selection(self) -> None:
         self.best_parents = [None] * self.parents_size
@@ -75,13 +85,13 @@ class Genetic:
             parent_1_idxs = np.random.permutation(self.new_generation_size) % self.parents_size
             parent_2_idxs = np.random.permutation(self.new_generation_size) % self.parents_size
             for j, (p1, p2) in enumerate(zip(parent_1_idxs, parent_2_idxs)):
-                if np.random.random() <= 0.7:
+                if np.random.random() <= self.blend_use:
                     self.population[j] = self.crossover_blend(
                         self.best_parents[p1], self.best_parents[p2])
                 else:
                     self.population[j] = self.crossover_two_point(
                         self.best_parents[p1], self.best_parents[p2])
-                self.population[j].mutate(self.mutation_rate, 4)
+                self.population[j].mutate(self.mutation_rate, self.max_blocks_mutation)
             
             self.population[self.new_generation_size:] = self.best_parents
 

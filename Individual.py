@@ -3,7 +3,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 class Individual:
-    def __init__(self, path_to_img: str = '', size: tuple = ()) -> None:
+    def __init__(self, path_to_img: str = '',
+                        size: tuple = (),
+                        block_size: tuple = (0.01, 0.1),
+                        num_blocks_initialize: tuple = (20, 50)) -> None:
+
+        self.block_size = block_size
+        self.num_blocks_initialize = num_blocks_initialize
+
         if len(path_to_img) == 0:
             self.img = np.zeros(size, dtype=np.float32)
             self.size = size
@@ -15,8 +22,10 @@ class Individual:
             self.size = self.img.shape
         
     def add_random_block(self, color: np.ndarray) -> None:
-        min_len, max_len = int(0.01*self.size[0]), int(0.1*self.size[1])
-        block_width = np.random.randint(min_len, max_len)
+        min_len_block = int(self.block_size[0]*self.size[0])
+        max_len_block = int(self.block_size[1]*self.size[1])
+
+        block_width = np.random.randint(min_len_block, max_len_block)
         start_width = np.random.randint(self.size[0])
         end_width = start_width
         if start_width + block_width >= self.size[0]:
@@ -28,7 +37,7 @@ class Individual:
         if start_width > end_width:
             start_width, end_width = end_width, start_width
             
-        block_height = np.random.randint(min_len, max_len)
+        block_height = np.random.randint(min_len_block, max_len_block)
         start_height = np.random.randint(self.size[1])
         end_height = start_height
         if start_height + block_height >= self.size[1]:
@@ -46,7 +55,7 @@ class Individual:
         background_color = np.random.random(3)
         self.img[:, :] = background_color
         random_color = np.random.random(3)
-        for _ in range(np.random.randint(20, 50)):
+        for _ in range(np.random.randint(*self.num_blocks_initialize)):
             self.add_random_block(random_color)
     
     def fitness(self, target_img: np.ndarray) -> np.float32:
