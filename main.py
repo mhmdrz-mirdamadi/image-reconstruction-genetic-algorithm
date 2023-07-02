@@ -13,10 +13,9 @@ if __name__ == '__main__':
     print('Population Initialized.')
     
     print('Running...')
-    model.run(generations=10000)
+    model.run(generations=100)
 
     print('Calculating Top Individuals...')
-    top, fitness = model.top_individuals(3)
-    for i, (t, f) in enumerate(zip(top, fitness), 1):
-        t.show(f'Rank {i}, Fitness: {f}')
-        t.save(f'out/angry_bird_{i}.png')
+    top, fitness = model.top_individuals()
+    top.show(f'Fitness: {fitness}')
+    top.save(f'out/angry_bird_reconstructed.png')

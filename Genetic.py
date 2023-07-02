@@ -59,16 +59,15 @@ class Genetic:
         
         return child
 
-    def top_individuals(self, top) -> tuple:
-        fitnesses = np.zeros(self.population_size)
+    def top_individuals(self) -> tuple:
+        top_individual: Individual
+        top_fitness = 10**9
         for i, individual in enumerate(self.population):
-            fitnesses[i] = self.target.fitness(individual.img)
+            if (f := self.target.fitness(individual.img)) < top_fitness:
+                top_fitness = f
+                top_individual = self.population[i]
 
-        sorted_fitnesses = np.argsort(fitnesses)
-        top_fitnesses = sorted_fitnesses[:top]
-        top_individuals = [self.population[idx] for idx in top_fitnesses]
-
-        return top_individuals, fitnesses[top_fitnesses]
+        return top_individual, top_fitness
 
     def run(self, generations: int, print_every: int = 50) -> None:
         for i in range(generations):
