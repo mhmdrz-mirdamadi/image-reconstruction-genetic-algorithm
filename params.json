@@ -1,7 +1,4 @@
 {
-    "input_path": "test/mario.png",
-    "output_path": "out/mario_out.png",
-
     "population_size": 120,
     "tournament_size": 0.08,
     "parents_size": 0.20,

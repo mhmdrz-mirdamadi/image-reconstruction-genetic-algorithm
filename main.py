@@ -1,13 +1,18 @@
 from json import load
+from sys import argv
 from Individual import Individual
 from Genetic import Genetic
 
 if __name__ == '__main__':
 
-    with open('params.json') as params_json:
+    print(len(argv))
+    if len(argv) != 4:
+        raise ValueError('\nUsage:\n\tpython main.py PATH_TO_PARAMS PATH_TO_INPUT PATH_TO_OUTPUT')
+
+    with open(argv[1]) as params_json:
         params = load(params_json)
 
-    target_img = Individual(params['input_path'])
+    target_img = Individual(argv[2])
 
     model = Genetic(
             target_img,
@@ -33,4 +38,4 @@ if __name__ == '__main__':
     print('Calculating Top Individual...')
     top, fitness = model.top_individuals()
     top.show(f'Fitness: {fitness}')
-    top.save(params['output_path'])
+    top.save(argv[3])
